@@ -1,0 +1,28 @@
+name: Deploy Emanates to GitHub Pages
+
+on:
+  issues:
+    types: [opened, edited, deleted]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build site
+        run: npm run generate
+        env:
+          EMANATES_TOKEN: ${{ secrets.EMANATES_TOKEN }}
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
